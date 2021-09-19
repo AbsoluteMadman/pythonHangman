@@ -1,4 +1,6 @@
 #Python Hangman terminal game
+import random
+
 
 def game_title():  #Prints beautiful ascii art
     print(" .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .-----------------. ")
@@ -25,5 +27,13 @@ def game_title():  #Prints beautiful ascii art
     print(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'")
 
 
+def get_word():  #Returns a random word from a list
+    word_list = ['creature', 'faithful', 'crown', 'engine', 'divergent', 'gabby', 'cough', 'natural', 'tenuous', 'expensive', 'bucket', 'square', 'historical', 'unequaled', 'pizzas', 'trite', 'reaction', 'uppity', 'overwrought', 'waiting', 'rifle']
+    word_num = random.randrange(0, len(word_list))
+    random_word = word_list[word_num]
+    return random_word
+
 
 game_title()
+word = get_word()
+print(word)
