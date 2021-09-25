@@ -32,64 +32,74 @@ def get_word(category):  #Returns a random word from a specific list
     cars = ['ford', 'ferarri', 'nissan', 'toyota', 'opel', 'skoda', 'volkswagen', 'mercedes', 'fiat', 'saab', 'lincoln', 'lexus', 'porsche', 'audi', 'bmw', 'renault', 'honda', 'lamborghini', 'koenigsegg', 'bugatti']
     countries = ['ireland', 'canada', 'ghana', 'france', 'russia', 'china', 'tibet', 'taiwan', 'japan', 'germany', 'spain', 'mexico', 'zimbabwe', 'israel', 'croatia', 'hungary', 'australia', 'sealand', 'greenland', 'sweden']
 
-    if category == 1:
+    if category == 'a':
         word_num = random.randrange(0, len(animals) - 1)
         random_word = animals[word_num]
 
-    elif category == 2:
+        return random_word
+
+    elif category == 'b':
         word_num = random.randrange(0, len(cars) - 1)
         random_word = cars[word_num]
+        
+        return random_word
 
-    elif category == 3:
+    elif category == 'c':
         word_num = random.randrange(0, len(countries) - 1)
         random_word = countries[word_num]
+        
+        return random_word
 
     else:
         exit
-    
-    return random_word
+
     
 def game_intro():
     print("Welcome to the game. Please choose an option.")
-    print("[1] New game")
-    print("[2] Quit")
+    print("[y] New game")
+    print("[n] Quit")
     choice = input()
     print(choice)
-    if choice == 1:
+    if choice == 'y':
         print("Let's begin. Please choose a category:")
-        print("[1] Animals")
-        print("[2] Cars")
-        print("[3] Countries")
+        print("[a] Animals")
+        print("[b] Cars")
+        print("[c] Countries")
         category = input()
         game_word = get_word(category)
+        print(game_word)
 
-    else:
+        return game_word
+
+    elif choice == 'n':
         print("Goodbye")
         
         #game exit
+    
 
 def get_blanks(game_word):
     game_blanks = ""
-      #Get the blank word
+    game_blanks_list = []
+
     for letter in game_word:
         game_blanks += " _ "
+        game_blanks_list.append('_')
     
-    return game_blanks
+    return game_blanks, game_blanks_list
 
-def update_blanks(new_letter, game_word): #finds the guessed letter in the game word and creates new blanks with the new letter
-    game_blanks = []
+
+def update_blanks(new_letter, game_blanks, game_word): #finds the guessed letter in the game word and creates new blanks with the new letter
     game_blanks_string = ""
-    for letter in game_word:
-        game_blanks.append('_ ')
-    
-    for i in range(0, len(game_word) - 1):
+
+    for i in range(0, len(game_word)):
         if game_word[i] == new_letter:
-            game_blanks[i] = new_letter + ' '
+            game_blanks[i] = new_letter
 
     for letter in game_blanks:
-        game_blanks_string += letter
+        game_blanks_string += letter + ' '
 
     return game_blanks_string
+
 
 def update_board(wrong_count):   #Updates the hangman board state
     hangman = ""
@@ -226,35 +236,47 @@ def update_board(wrong_count):   #Updates the hangman board state
     return hangman
 
 
-    
-
-
-
-def game_logic(game_blanks, game_word):
+def game_logic():
     #Game while loop
     #print gamestate
+    game_word = game_intro()
+    print(game_word)
+    
+    blanks, blanks_list = get_blanks(game_word)
+    print("Your word: " + blanks)
     game_fail = False
     wrong_count = 0
+
     while game_fail == False:
-        print("Enter a letter: ")
-        new_letter = input()
+        input_check = 0
 
-        for letter in game_word:
-            if letter == new_letter:
-                print("Correct!")
-                #update_blanks(new_letter, game_blanks, game_word)
-                #draw new board
-                #print new blanks
+        while input_check == 0:
+            print("Enter a letter: ")
+            new_letter = input()
+            if len(new_letter) > 1:
+                print("Only one letter at a time, you fatfingered sunofabitch! You're outta here!")
+                exit
+            
+            correct_guess = game_word.find(new_letter)
+            if correct_guess > -1:
+                print("correct")
+                blanks = update_blanks(new_letter, blanks_list, game_word)
+                print(blanks)
+                input_check +=1
+            
             else:
-                print("Wrong answer!")
                 wrong_count +=1
-                #update_board(wrong_count)
+                hangman = update_board(wrong_count)
+                print(hangman)
+                if wrong_count >= 11:
+                    exit
+                input_check +=1
+        
          
-""" game_title()
-#game_intro()
-new_word = get_word(2)
-print(new_word) """
+         
+#game_title()
 
+game_logic()
 
-x = update_board(5)
-print(x)
+""" x = update_blanks('n', ['h','_','_','_','_','_','_'], "hangman")
+print(x) """
