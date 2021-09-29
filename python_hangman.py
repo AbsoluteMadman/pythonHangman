@@ -67,7 +67,7 @@ def game_intro():
         print("[c] Countries")
         category = input()
         game_word = get_word(category)
-        print(game_word)
+        #print(game_word)
 
         return game_word
 
@@ -240,19 +240,24 @@ def game_logic():
     #Game while loop
     #print gamestate
     game_word = game_intro()
-    print(game_word)
+    #print(game_word)
     
     blanks, blanks_list = get_blanks(game_word)
     print("Your word: " + blanks)
     game_fail = False
     wrong_count = 0
+    guesses = []
+    #print(update_board(wrong_count))
 
     while game_fail == False:
         input_check = 0
 
         while input_check == 0:
+            print(update_board(wrong_count)) 
+            print("Incorrect guesses: " + str(guesses))           
             print("Enter a letter: ")
             new_letter = input()
+            
             if len(new_letter) > 1:
                 print("Only one letter at a time, you fatfingered sunofabitch! You're outta here!")
                 exit
@@ -261,22 +266,22 @@ def game_logic():
             if correct_guess > -1:
                 print("correct")
                 blanks = update_blanks(new_letter, blanks_list, game_word)
-                print(blanks)
                 input_check +=1
             
             else:
                 wrong_count +=1
-                hangman = update_board(wrong_count)
+                guesses.append(new_letter)
+                hangman = update_board(wrong_count)                
                 print(hangman)
+                
                 if wrong_count >= 11:
-                    exit
+                    game_fail = True
                 input_check +=1
+            print(update_blanks(new_letter, blanks_list, game_word))
         
          
          
-#game_title()
+game_title()
 
 game_logic()
 
-""" x = update_blanks('n', ['h','_','_','_','_','_','_'], "hangman")
-print(x) """
