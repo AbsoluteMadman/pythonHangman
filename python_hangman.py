@@ -73,7 +73,7 @@ def game_intro():
 
     elif choice == 'n':
         print("Goodbye")
-        
+
         #game exit
     
 
@@ -241,11 +241,12 @@ def game_logic():
     #print gamestate
     game_word = game_intro()
     #print(game_word)
-    
+    win_num = len(game_word)
     blanks, blanks_list = get_blanks(game_word)
     print("Your word: " + blanks)
     game_fail = False
     wrong_count = 0
+    correct_count = 0
     guesses = []
     #print(update_board(wrong_count))
 
@@ -253,6 +254,7 @@ def game_logic():
         input_check = 0
 
         while input_check == 0:
+            
             print(update_board(wrong_count)) 
             print("Incorrect guesses: " + str(guesses))           
             print("Enter a letter: ")
@@ -266,22 +268,33 @@ def game_logic():
             if correct_guess > -1:
                 print("correct")
                 blanks = update_blanks(new_letter, blanks_list, game_word)
+                correct_count +=1
                 input_check +=1
             
             else:
-                wrong_count +=1
-                guesses.append(new_letter)
-                hangman = update_board(wrong_count)                
-                print(hangman)
+                
+                if new_letter in guesses:
+                    print("You already entered that letter. Try again.")
+
+                else:
+                    wrong_count +=1
+                    guesses.append(new_letter)
+                    hangman = update_board(wrong_count)      
+                    print(hangman)
                 
                 if wrong_count >= 11:
                     game_fail = True
                 input_check +=1
             print(update_blanks(new_letter, blanks_list, game_word))
+            if correct_count == win_num:
+                print("You win!!!")
+                game_fail = True
+    
+    if game_fail == True:
+        print("\nThe word is: " + game_word)
         
          
          
 game_title()
-
 game_logic()
 
