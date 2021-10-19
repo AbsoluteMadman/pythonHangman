@@ -101,6 +101,19 @@ def update_blanks(new_letter, game_blanks, game_word): #finds the guessed letter
     return game_blanks_string
 
 
+def word_checker(guesses, game_word):
+    correct_counter = 0
+    for letter in game_word:
+        if letter in guesses:
+            correct_counter +=1
+
+    if len(game_word) == correct_counter:
+        print("You Win")
+        return True
+    else:
+        return False
+
+
 def update_board(wrong_count):   #Updates the hangman board state
     hangman = ""
 
@@ -246,55 +259,70 @@ def game_logic():
     print("Your word: " + blanks)
     game_fail = False
     wrong_count = 0
-    correct_count = 0
+    correct_count = 0 #Instead of this, check the word after each letter guess. With this implementation, more than 1 letter occurring would not be counted.
+    correct_list = []
     guesses = []
     #print(update_board(wrong_count))
 
-    while game_fail == False:
+    while game_fail == False:   #Main game loop
         input_check = 0
 
-        while input_check == 0:
+        while input_check == 0: #Loop for next input
             
-            print(update_board(wrong_count)) 
-            print("Incorrect guesses: " + str(guesses))           
+            print(update_board(wrong_count))   #Updates the hangman board
+            print("Incorrect guesses: " + str(guesses))           #Displays the incorrect letters guessed
             print("Enter a letter: ")
             new_letter = input()
             
-            if len(new_letter) > 1:
-                print("Only one letter at a time, you fatfingered sunofabitch! You're outta here!")
+            if len(new_letter) > 1: #Basic input error checking, need to check for alphabet characters only
+                print("Please enter one letter at a time.")
                 exit
             
-            correct_guess = game_word.find(new_letter)
+            correct_guess = game_word.find(new_letter) #checking if the letter is found in the word
             if correct_guess > -1:
+                correct_list.append(new_letter)
                 print("correct")
+                game_fail = word_checker(correct_list, game_word)
                 blanks = update_blanks(new_letter, blanks_list, game_word)
                 correct_count +=1
                 input_check +=1
             
             else:
                 
-                if new_letter in guesses:
+                if new_letter in guesses: #checks if letter is in guesses list
                     print("You already entered that letter. Try again.")
 
-                else:
+                else: #if incorrect letter is guessed next hangman piece is added and board is updated
                     wrong_count +=1
+                    input_check +=1
                     guesses.append(new_letter)
                     hangman = update_board(wrong_count)      
                     print(hangman)
-                
-                if wrong_count >= 11:
-                    game_fail = True
-                input_check +=1
+                    if wrong_count >= 11:
+                        game_fail = True
+
             print(update_blanks(new_letter, blanks_list, game_word))
-            if correct_count == win_num:
-                print("You win!!!")
-                game_fail = True
+
+            #if correct_list contains all letters in game_word
+            
     
     if game_fail == True:
         print("\nThe word is: " + game_word)
+
         
-         
-         
+player_choice = True
 game_title()
-game_logic()
+
+while player_choice == True:
+    
+    game_logic()
+    print("Would you like to play again? [y/n]")
+    player_input = input()
+    if player_choice == 'n':
+        print("Goodbye.")
+        player_choice = False
+    elif player_input == 'y':
+        player_choice == True
+
+
 
