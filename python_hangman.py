@@ -27,10 +27,10 @@ def game_title():  #Prints beautiful ascii art
     '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'""")
 
 def get_word(category):  #Returns a random word from a specific list
-    word_list = ['creature', 'faithful', 'crown', 'engine', 'divergent', 'gabby', 'cough', 'natural', 'tenuous', 'expensive', 'bucket', 'square', 'historical', 'unequaled', 'pizzas', 'trite', 'reaction', 'uppity', 'overwrought', 'waiting', 'rifle']
     animals = ['cat', 'dog', 'giraffe', 'aardvark', 'lion', 'rat', 'frog', 'pig', 'cow', 'horse', 'whale', 'spider', 'squirrel', 'octopus', 'jellyfish', 'zebra', 'chimpanzee', 'raccoon', 'ocelot', 'platypus']
     cars = ['ford', 'ferarri', 'nissan', 'toyota', 'opel', 'skoda', 'volkswagen', 'mercedes', 'fiat', 'saab', 'lincoln', 'lexus', 'porsche', 'audi', 'bmw', 'renault', 'honda', 'lamborghini', 'koenigsegg', 'bugatti']
     countries = ['ireland', 'canada', 'ghana', 'france', 'russia', 'china', 'tibet', 'taiwan', 'japan', 'germany', 'spain', 'mexico', 'zimbabwe', 'israel', 'croatia', 'hungary', 'australia', 'sealand', 'greenland', 'sweden']
+    programming_lang = ['python', 'java', 'perl', 'ruby', 'golang', 'javascript', 'bash', 'typescript', 'kotlin', 'sql', 'html', 'css', 'vba', 'rust']
 
     if category == 'a':
         word_num = random.randrange(0, len(animals) - 1)
@@ -50,31 +50,40 @@ def get_word(category):  #Returns a random word from a specific list
         
         return random_word
 
+    elif category == 'd':
+        word_num = random.randrange(0, len(programming_lang) - 1)
+        random_word = programming_lang[word_num]
+        
+        return random_word
+
     else:
-        exit
+        exit 
 
     
 def game_intro():
     print("Welcome to the game. Please choose an option.")
     print("[y] New game")
     print("[n] Quit")
-    choice = input()
-    print(choice)
-    if choice == 'y':
-        print("Let's begin. Please choose a category:")
-        print("[a] Animals")
-        print("[b] Cars")
-        print("[c] Countries")
-        category = input()
-        game_word = get_word(category)
-        #print(game_word)
 
-        return game_word
+    state = input("Enter your choice: ")
+    if state == 'y' or state == 'Y':
+        return True
 
-    elif choice == 'n':
-        print("Goodbye")
+    elif state == 'n' or state == 'N':
+        return False
 
-        #game exit
+
+def get_game_word():
+    print("Let's begin. Please choose a category:")
+    print("[a] Animals")
+    print("[b] Cars")
+    print("[c] Countries")
+    print("[d] Programming Languages")
+    category = input()
+    game_word = get_word(category)
+    #print(game_word)
+
+    return game_word
     
 
 def get_blanks(game_word):
@@ -252,12 +261,12 @@ def update_board(wrong_count):   #Updates the hangman board state
 def game_logic():
     #Game while loop
     #print gamestate
-    game_word = game_intro()
+    game_fail = False
+    game_word = get_game_word()
     #print(game_word)
     win_num = len(game_word)
     blanks, blanks_list = get_blanks(game_word)
     print("Your word: " + blanks)
-    game_fail = False
     wrong_count = 0
     correct_count = 0 #Instead of this, check the word after each letter guess. With this implementation, more than 1 letter occurring would not be counted.
     correct_list = []
@@ -273,46 +282,44 @@ def game_logic():
             print("Incorrect guesses: " + str(guesses))           #Displays the incorrect letters guessed
             print("Enter a letter: ")
             new_letter = input()
-            
-            if len(new_letter) > 1: #Basic input error checking, need to check for alphabet characters only
-                print("Please enter one letter at a time.")
-                exit
-            
-            correct_guess = game_word.find(new_letter) #checking if the letter is found in the word
-            if correct_guess > -1:
-                correct_list.append(new_letter)
-                print("correct")
-                game_fail = word_checker(correct_list, game_word)
-                blanks = update_blanks(new_letter, blanks_list, game_word)
-                correct_count +=1
-                input_check +=1
+
+            if new_letter.isalpha() == True & len(new_letter) == 1: #Basic input error checking, checks if single character and alphabet           
+                correct_guess = game_word.find(new_letter) #checking if the letter is found in the word
+                
+                if correct_guess > -1:
+                    correct_list.append(new_letter)
+                    print("correct")
+                    game_fail = word_checker(correct_list, game_word)
+                    blanks = update_blanks(new_letter, blanks_list, game_word)
+                    correct_count +=1
+                    input_check +=1
+                    
+                else:
+                        
+                    if new_letter in guesses: #checks if letter is in guesses list
+                        print("You already entered that letter. Try again.")
+
+                    else: #if incorrect letter is guessed next hangman piece is added and board is updated
+                        wrong_count +=1
+                        input_check +=1
+                        guesses.append(new_letter)
+                        hangman = update_board(wrong_count)      
+                        print(hangman)
+                        if wrong_count >= 11:
+                            game_fail = True
             
             else:
-                
-                if new_letter in guesses: #checks if letter is in guesses list
-                    print("You already entered that letter. Try again.")
+                print("Please enter a single alphabet character only.")
 
-                else: #if incorrect letter is guessed next hangman piece is added and board is updated
-                    wrong_count +=1
-                    input_check +=1
-                    guesses.append(new_letter)
-                    hangman = update_board(wrong_count)      
-                    print(hangman)
-                    if wrong_count >= 11:
-                        game_fail = True
-
-            print(update_blanks(new_letter, blanks_list, game_word))
-
-            #if correct_list contains all letters in game_word
-            
+        print(update_blanks(new_letter, blanks_list, game_word))            
     
     if game_fail == True:
         print("\nThe word is: " + game_word)
 
         
-player_choice = True
+#player_choice = True
 game_title()
-
+player_choice = game_intro()
 while player_choice == True:
     
     game_logic()
