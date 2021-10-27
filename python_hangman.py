@@ -79,7 +79,7 @@ def get_game_word():
     print("[b] Cars")
     print("[c] Countries")
     print("[d] Programming Languages")
-    category = input()
+    category = input("Select a category: ")
     game_word = get_word(category)
     #print(game_word)
 
@@ -280,8 +280,7 @@ def game_logic():
             
             print(update_board(wrong_count))   #Updates the hangman board
             print("Incorrect guesses: " + str(guesses))           #Displays the incorrect letters guessed
-            print("Enter a letter: ")
-            new_letter = input()
+            new_letter = input("Enter a letter: ")
 
             if new_letter.isalpha() == True & len(new_letter) == 1: #Basic input error checking, checks if single character and alphabet           
                 correct_guess = game_word.find(new_letter) #checking if the letter is found in the word
@@ -323,13 +322,9 @@ player_choice = game_intro()
 while player_choice == True:
     
     game_logic()
-    print("Would you like to play again? [y/n]")
-    player_input = input()
-    if player_choice == 'n':
+    player_input = input("Would you like to play again? [y/n] ")
+    if player_input == 'n':
         print("Goodbye.")
         player_choice = False
     elif player_input == 'y':
         player_choice == True
-
-
-
